@@ -19,7 +19,7 @@ const errorMiddleware = (err, req, res, next) => {
 
     // Wrong JWT error 
     if (err.name === "JsonWebTokenError") {
-        const message = `Invalid Token `;
+        const message = `Invalid Token`;
         err = new ErrorHandler(message, 400)
     }
 

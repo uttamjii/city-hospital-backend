@@ -20,7 +20,7 @@ const isAuthenticated = catchAsyncError(async (req, res, next) => {
     const user = await UserModel.findById(id);
 
     if (!user) {
-      return next(new ErrorHandler("Unathorized User, No Token..", 401));
+      return next(new ErrorHandler("User does not exist!", 401));
     }
 
     req.user = user;

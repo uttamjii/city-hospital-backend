@@ -19,6 +19,7 @@ export const createAppointment = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Please fill all the fields", 400));
   }
 
+
   let loginUser;
   let doctorId;
 

@@ -35,6 +35,7 @@ const AppointmentSchema = new mongoose.Schema({
     },
     appointmentTime: {
         type: String,
+        
         trim: true,
     },
     message: {
