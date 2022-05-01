@@ -19,7 +19,6 @@ export const createAppointment = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Please fill all the fields", 400));
   }
 
-
   let loginUser;
   let doctorId;
 
@@ -52,9 +51,10 @@ export const createAppointment = catchAsyncError(async (req, res, next) => {
   });
 });
 
-
 export const getAllAppointments = catchAsyncError(async (req, res, next) => {
-  const appointments = await AppointmentModel.find().populate("doctorId loginUser");
+  const appointments = await AppointmentModel.find().populate(
+    "doctorId loginUser"
+  );
   res.status(200).json({
     status: true,
     appointments: appointments.reverse(),
@@ -62,7 +62,9 @@ export const getAllAppointments = catchAsyncError(async (req, res, next) => {
 });
 
 export const getUserAppointments = catchAsyncError(async (req, res, next) => {
-  const appointments = await AppointmentModel.find({ loginUser: req.user._id }).populate("doctorId");
+  const appointments = await AppointmentModel.find({
+    loginUser: req.user._id,
+  }).populate("doctorId");
 
   if (!appointments) {
     return next(new ErrorHandler("No appointments found", 404));
@@ -73,7 +75,6 @@ export const getUserAppointments = catchAsyncError(async (req, res, next) => {
     appointments: appointments.reverse(),
   });
 });
-
 
 export const deleteAppointment = catchAsyncError(async (req, res, next) => {
   const appointment = await AppointmentModel.findById(req.params.id);
@@ -133,6 +134,11 @@ export const updateAppointmentStatus = catchAsyncError(
         adminId: req.user._id,
         adminName: req.user.name,
         message: req.body.adminMessage,
+      };
+    } else {
+      adminMessage = {
+        adminId: req.user._id,
+        adminName: req.user.name,
       };
     }
 
