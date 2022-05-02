@@ -25,11 +25,15 @@ export const createAppointment = catchAsyncError(async (req, res, next) => {
   if (req.user) {
     loginUser = req.user._id;
   }
+
   if (req.body.doctorId) {
-    const doctor = await DoctorModel.findById(req.body.doctorId);
-    if (doctor) {
+    try {
+      await DoctorModel.findById(req.body.doctorId);
       doctorId = req.body.doctorId;
+    } catch (error) {
+      return next(new ErrorHandler("Doctor Not Found", 400));
     }
+    
   }
 
   await AppointmentModel.create({
@@ -83,13 +87,14 @@ export const deleteAppointment = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Appointment not found", 404));
   }
 
-  if (appointment.loginUser.toString() == req.user._id.toString()) {
+  if (appointment.loginUser?.toString() == req.user._id?.toString()) {
     await AppointmentModel.findByIdAndDelete(req.params.id);
     return res.status(200).json({
       status: true,
       message: "Appointment deleted successfully",
     });
   }
+
   if (req.user.role == "admin") {
     await AppointmentModel.findByIdAndDelete(req.params.id);
     return res.status(200).json({
