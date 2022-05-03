@@ -5,8 +5,12 @@ import "./utils/passportGoogleConfig.js";
 import passport from "passport";
 import cookieSession from "cookie-session";
 import fileUpload from "express-fileupload";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 const app = express();
+
+// Cookie parser
+app.use(cookieParser());
 
 // Cookie Session
 app.use(
@@ -17,11 +21,12 @@ app.use(
 );
 
 // Cors
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true,
-  
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
 // middleware
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));

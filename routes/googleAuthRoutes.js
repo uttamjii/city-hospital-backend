@@ -3,8 +3,8 @@ const router = express.Router();
 import passport from "passport";
 
 router.get("/google/success", (req, res) => {
-  // console.log(req.cookies);
-  // console.log(req.session);
+  console.log(req.cookies);
+  console.log(req.session);
   if (req.user) {
     return res.status(200).json({
       status: true,
