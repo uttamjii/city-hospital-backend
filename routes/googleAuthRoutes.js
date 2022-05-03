@@ -3,8 +3,8 @@ const router = express.Router();
 import passport from "passport";
 
 router.get("/google/success", (req, res) => {
- 
-
+  // console.log(req.cookies);
+  // console.log(req.session);
   if (req.user) {
     return res.status(200).json({
       status: true,
@@ -15,7 +15,7 @@ router.get("/google/success", (req, res) => {
   }
   return res.status(400).json({
     status: false,
-    message: "Please login first",
+    message: "login failed",
   });
 });
 
@@ -27,7 +27,7 @@ router.get("/google/logout", (req, res) => {
 router.get("/google/failed", (req, res) => {
   res.status(401).json({
     status: false,
-    message: "Login failed",
+    message: "Login failed Please try again",
   });
 });
 
