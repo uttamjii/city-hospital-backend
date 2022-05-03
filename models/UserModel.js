@@ -58,6 +58,11 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  googleId: {
+    type: String,
+    default: "",
+    select: false,
+  },
 });
 
 // Password Hash using bcrypt js

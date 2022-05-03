@@ -6,7 +6,6 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 
-
 import app from "./app.js";
 import connectDB from "./connectionDB/ConnectDB.js";
 import cloudinary from "cloudinary";
