@@ -5,9 +5,9 @@ import ErrorHandler from "../utils/errorHandler.js";
 import Buffer from "buffer";
 
 router.get("/google/success", (req, res, next) => {
-  // console.log(req.cookies.session);
-  // console.log(req.cookies);
-  // console.log(req.session);
+  console.log(req.cookies.session);
+  console.log(req.cookies);
+  console.log(req.session);
   // console.log(req.session.passport);
   if (req.user) {
     return res.status(200).json({
@@ -29,10 +29,20 @@ router.get("/google/success", (req, res, next) => {
     });
   }
 
-  return next(new ErrorHandler("login failed", 400));
+  // return next(new ErrorHandler("login failed", 400));
+
+  return res.status(200).json({
+    status: false,
+    message: "login failed",
+    cookies: req.cookies,
+    session: req.session,
+  });
 });
 
 router.get("/google/logout", (req, res) => {
+  req.cookies.session = undefined;
+  req.session = undefined;
+
   req.logout();
   res.redirect(process.env.FRONTEND_URL);
 });
