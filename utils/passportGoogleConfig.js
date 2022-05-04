@@ -31,25 +31,29 @@ passport.use(
 
       const user = await UserModel.findOne({ email });
 
-      if (user) {
-        const token = user.generateAuthToken();
-        return done(null, { token, user });
+      if (profile) {
+        if (user) {
+          const token = user.generateAuthToken();
+          return done(null, { token, user });
+        } else {
+          const newUser = await UserModel.create(
+            {
+              name,
+              email,
+              avatar,
+              googleAuth,
+              password,
+              googleId,
+            },
+            {
+              new: true,
+            }
+          );
+          const token = newUser.generateAuthToken();
+          return done(null, { token, newUser });
+        }
       } else {
-        const newUser = await UserModel.create(
-          {
-            name,
-            email,
-            avatar,
-            googleAuth,
-            password,
-            googleId,
-          },
-          {
-            new: true,
-          }
-        );
-        const token = newUser.generateAuthToken();
-        return done(null, { token, newUser });
+        return done(null, false);
       }
     }
   )
