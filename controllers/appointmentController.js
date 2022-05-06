@@ -2,6 +2,7 @@ import catchAsyncError from "../middleware/catchAsyncErrors.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import DoctorModel from "../models/DoctorModel.js";
 import AppointmentModel from "../models/AppointmentModel.js";
+import sendEmail from "../utils/sendEmail.js";
 
 export const createAppointment = catchAsyncError(async (req, res, next) => {
   const {
@@ -28,12 +29,16 @@ export const createAppointment = catchAsyncError(async (req, res, next) => {
 
   if (req.body.doctorId) {
     try {
-      await DoctorModel.findById(req.body.doctorId);
-      doctorId = req.body.doctorId;
+      const doctor = await DoctorModel.findById(req.body.doctorId);
+
+      if (doctor.available === "YES") {
+        doctorId = req.body.doctorId;
+      } else {
+        return next(new ErrorHandler("Sorry But Doctor is not available", 400));
+      }
     } catch (error) {
       return next(new ErrorHandler("Doctor Not Found", 400));
     }
-    
   }
 
   await AppointmentModel.create({
@@ -146,12 +151,30 @@ export const updateAppointmentStatus = catchAsyncError(
         adminName: req.user.name,
       };
     }
+    // Send Email
+    try {
+      if (appointment.sendComfirmedMail === true) {
+        const message = `Your Appointment Was Confirmed.`;
+
+        await sendEmail({
+          email: appointment.email,
+          subject: `City Hospital - Appointment Confirmed`,
+          message: message,
+        });
+      }
+    } catch (error) {
+      return next(
+        // new ErrorHandler("Problem In Sending Confirmation Mail", 500)
+        new ErrorHandler(error.message, 500)
+      );
+    }
 
     await AppointmentModel.findByIdAndUpdate(
       req.params.id,
       {
         status: status,
         adminMessage: adminMessage,
+        sendComfirmedMail: false,
       },
       { new: true }
     );
